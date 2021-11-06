@@ -7,10 +7,11 @@
     <title>Document</title>
   </head>
   <body>
-    <input type="text" value="1234" id="room" />
     <script src="/socket.io/socket.io.js"></script>
     <script src="./simplepeer.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/downloadjs/1.4.8/download.min.js"></script>
     <script src="./index.js"></script>
+    <input type="text" id="room" />
     <input type="button" value="send" onclick="SendRoom()" /><br />
     <input type="file" name="f" id="f" multiple />
     <input type="button" onclick="fileRedur()" />

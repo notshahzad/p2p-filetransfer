@@ -1,6 +1,7 @@
 var socket = io();
 var peer;
-var DATA = new Uint8Array(),
+var DATA = [],
+  SIZE,
   filename,
   filesize;
 const filereader = new FileReader();
@@ -8,7 +9,6 @@ function SendRoom() {
   room = document.getElementById("room").value;
   socket.emit("room", room);
 }
-SendRoom();
 socket.on("initiator", (initiator) => {
   if (initiator !== "roomfull") {
     peer = new SimplePeer({
@@ -23,6 +23,7 @@ socket.on("initiator", (initiator) => {
       socket.on("answer", (sdp) => {
         peer.signal(sdp);
         socket.close();
+        console.log("connected");
       });
     }
     peer.on("signal", (sdp) => {
@@ -38,9 +39,17 @@ socket.on("initiator", (initiator) => {
       if (data.type === "header") {
         filename = data.name;
         filesize = data.size;
-        console.log(filename, filesize);
       } else {
-        console.log(data);
+        DATA.push(data);
+        if (
+          (DATA.length - 1) * 1000 + DATA[DATA.length - 1].length ==
+          filesize
+        ) {
+          FILE = new Blob(DATA);
+          download(FILE, filename);
+          SIZE = 0;
+          DATA = [];
+        }
       }
     });
   } else alert("haha sucks to be you the room is already taken");
